@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Flashcard number {{ card.id }}</h1>
+    <p>Front: {{ card.front }} </p>
+    <p>Back: {{ card.back }}</p>
+     <p>Languages: {{ card.front_language }} - {{ card.back_language }} </p>
+    <p>Mastery level: {{ card.get_mastery_level_display }}</p>
+    <p>Tags: {{ card.tags }}</p>
+
+    {% if card.is_difficult is True %}
+       <p>Difficult</p>
+    {% endif %}
+    <p>Included in lists:</p>
+   <ul>
+    {% for list in card.lists.all %}
+    <li><a href="/show_all/lists/{{ list.id }}/">{{ list.name }}</a></li>
+    {%  endfor %}
+   </ul>
+
+        <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a>
+        <a href="/show_all/flashcards/{{ card.id }}/delete/">>delete<</a>
+{% endblock %}

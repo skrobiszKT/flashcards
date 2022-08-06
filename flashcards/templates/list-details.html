@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ list.name }} - list's details</h1>
+    <p>Language to learn: {{ list.language_to_learn }}</p>
+    <p>Learning in: {{ list.learning_in_language }}</p>
+    <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a>
+        <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a>
+    <a href="/show_all/lists/{{ list.id }}/add-flashcard/">+ add new flashcard to this list</a>
+
+<p>Included in courses:</p>
+   <ul>
+    {% for course in list.courses.all %}
+    <li><a href="/show_all/courses/{{ course.id }}/">{{ course.name }}</a></li>
+    {%  endfor %}
+   </ul>
+    <h2>Flashcards added to this list: {{ list.flashcards.count }}</h2>
+    <ol>
+    {% for card in list.flashcard_set.all %}
+    <li><h3>{{ card.front }} - {{ card.back }}</h3>
+        <p>{{ card.front_language.symbol }} - {{ card.back_language.symbol }} </p>
+        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/show_all/flashcards/{{ card.id }}/delete/">>remove<</a></li>
+    {% endfor %}
+    </ol>
+
+{% endblock %}

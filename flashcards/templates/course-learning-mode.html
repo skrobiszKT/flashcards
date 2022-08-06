@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Learning Mode</h1>
+    <h3>{{ course.name }}</h3>
+    <p><a href=""> >all< </a> <a href=""> >level "None"< </a>  <a href=""> >level "Medium"< </a> <a href=""> >level "High"< </a> <a href=""> >marked "Difficult"< </a></p>
+<h4>Learn by list:</h4>
+    <form action="" method="POST">
+    {% csrf_token %}
+    <label for="choose-list">Choose a list:</label>
+    <select id="choose-list" name="list">
+        {% for list in course.list_set.all %}
+            <option value="{{ list.id }}">{{ list.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="choose-level">Choose a level:</label>
+    <select id="choose-level" name="level">
+        <option value="1">Hard</option>
+        <option value="2">Good</option>
+        <option value="3">Easy</option>
+        <option value="4">Excellent</option>
+        <option value="5">Marked "Difficult"</option>
+    </select>
+<input type="submit" value="OK">
+</form>
+
+{% endblock %}

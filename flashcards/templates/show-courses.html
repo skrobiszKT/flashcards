@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Your Courses</h1>
+    <p><a href="{% url "add-course" %}">Add a new course</a></p>
+    <p>Added so far: {{ courses.count }} course(s)</p>
+    <ul>
+    {% for course in courses %}
+        <li><h3>{{ course.name }}</h3>
+        {% if course.language_to_learn and course.learning_in_language %}
+            <p>{{ course.language_to_learn }} - {{ course.learning_in_language }} </p>
+            {% endif %}
+        <p>Level: {{ course.get_level_display }}</p>
+        <a href="/show_all/courses/{{ course.id }}/">>details<</a> <a href="/show_all/courses/{{ course.id }}/edit/">>edit<</a> <a href="/show_all/courses/{{ course.id }}/delete/">>delete<</a></li>
+
+    {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Learning Mode</h1>
+    <h3>Choose a course:</h3>
+    {% if not courses %}
+    <h3>Add a course first!</h3>
+    {% endif %}
+<ul>
+{% for course in courses %}
+<li><a href="/learning_mode/course/{{ course.id }}/">{{ course.name }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

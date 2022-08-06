@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ course.name }} - course's details</h1>
+    <p>Language to learn: {{ course.language_to_learn }}</p>
+    <p>Learning in: {{ course.learning_in_language }}</p>
+    <a href="/show_all/courses/{{ course.id }}/edit/">>edit<</a>
+        <a href="/show_all/courses/{{ course.id }}/delete/">>delete<</a>
+    <a href="/show_all/courses/{{ course.id }}/add-list/">+ add a new list to this course</a>
+
+
+    <h2>Lists added to this course: {{ course.list_set.count }}</h2>
+    <ol>
+    {% for list in course.list_set.all %}
+    <li><h3>{{ list.name }}</h3>
+        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a></li>
+    {% endfor %}
+    </ol>
+
+{% endblock %}

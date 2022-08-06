@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Main Page</h1>
+    <p>Quick welcome revision:</p>
+    {% if card is None %}
+    <h4>No flashcards added!</h4>
+    {% else %}
+    <h3>{{ card.front }} - {{ card.back }}</h3>
+{%  endif %}
+    <p>Recently added list:</p>
+    {% if recent_list is None %}
+    no lists added!
+    {%  else %}
+    <a href="/show_all/lists/{{ recent_list.id }}/">{{ recent_list.name }}</a>
+    {% endif %}
+    <p>Recently added course:</p>
+    {% if recent_course is None %}
+    no courses added!
+    {%  else %}
+    <a href="/show_all/courses/{{ recent_course.id }}/">{{ recent_course.name }}</a>
+    {% endif %}
+{% endblock %}
+

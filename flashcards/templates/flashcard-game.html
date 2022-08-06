@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Guess</h1>
+    <h3>{{ card.front }}</h3>
+    <form action="" method="POST">
+    {% csrf_token %}
+        <input type="hidden" name="card_id" value="{{ card.id }}">
+<input type="text" name="answer">
+<input type="submit" value="OK">
+</form>
+
+{% endblock %}
