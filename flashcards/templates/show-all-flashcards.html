@@ -8,7 +8,7 @@
     {% for card in flashcards %}
         <li><h3>{{ card.front }} - {{ card.back }}</h3>
         <p>{{ card.front_language.symbol }} - {{ card.back_language.symbol }} </p>
-        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/show_all/flashcards/{{ card.id }}/delete/">>delete<</a></li>
+        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/">>delete<</a></li>
 
     {% endfor %}
     </ul>

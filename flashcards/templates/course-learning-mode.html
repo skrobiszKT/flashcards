@@ -10,12 +10,12 @@
     <label for="choose-list">Choose a list:</label>
     <select id="choose-list" name="list">
         {% for list in course.list_set.all %}
-            <option value="{{ list.id }}">{{ list.name }}</option>
+            <option value="{{ list.id }}">{{ list.name }} ({{ list.flashcard_set.count }})</option>
         {% endfor %}
     </select>
     <label for="choose-level">Choose a level:</label>
     <select id="choose-level" name="level">
-        <option value="1">Hard</option>
+        <option value="1">Hard </option>
         <option value="2">Good</option>
         <option value="3">Easy</option>
         <option value="4">Excellent</option>

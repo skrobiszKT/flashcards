@@ -21,7 +21,6 @@ COURSE_LEVELS = (
 class Language(models.Model):
     language = models.CharField(max_length=64, unique=True)
     symbol = models.CharField(max_length=4, unique=True)
-    charset = models.CharField(max_length=32, null=True)
 
     def __str__(self):
         return self.language
@@ -59,8 +58,7 @@ class Flashcard(models.Model):
     mastery_level = models.IntegerField(choices=MASTERY_LEVELS, default=1)
     is_difficult = models.BooleanField(default=False)
     tags = models.CharField(max_length=32, null=True)
-    lists = models.ManyToManyField(List, blank=True)
-
+    lists = models.ManyToManyField(List, blank=True, )
 
     def __str__(self):
         self.showed_name = f"{self.front} - {self.back}"

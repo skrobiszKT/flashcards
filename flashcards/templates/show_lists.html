@@ -8,7 +8,8 @@
     {% for list in lists %}
         <li><h3>{{ list.name }}</h3>
         {% if list.language_to_learn and list.learning_in_language %}
-            <p>{{ list.language_to_learn }} - {{ list.learning_in_language }} </p>
+            <p>{{ list.language_to_learn.symbol }} - {{ list.learning_in_language.symbol }} </p>
+            <p> {{ list.courses }} ({{ list.courses.get_level_display }})</p>
             {% endif %}
         <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a></li>
 

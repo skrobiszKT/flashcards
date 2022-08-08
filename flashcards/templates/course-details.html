@@ -13,7 +13,7 @@
     <ol>
     {% for list in course.list_set.all %}
     <li><h3>{{ list.name }}</h3>
-        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a></li>
+        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/delete/l/{{ list.id }}/">>delete<</a></li>
     {% endfor %}
     </ol>
 

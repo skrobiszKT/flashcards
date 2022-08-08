@@ -8,7 +8,7 @@
     {% endif %}
 <ul>
 {% for course in courses %}
-<li><a href="/learning_mode/course/{{ course.id }}/">{{ course.name }}</a></li>
+<li><a href="/learning_mode/course/{{ course.id }}/">{{ course.name }} ({{ course.get_level_display }})</a></li>
 {% endfor %}
 </ul>
 

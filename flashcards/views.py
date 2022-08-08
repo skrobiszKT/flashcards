@@ -1,11 +1,11 @@
 import random
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, redirect, get_list_or_404
 from django.views import View
 from django.contrib import messages
-from flashcards.forms import AddFlashcard, AddList, AddCourse
+from flashcards.forms import AddFlashcard, AddList, AddCourse, AddLanguage
 from flashcards.models import Flashcard, Language, List, Course
 
 
@@ -77,7 +77,14 @@ class DeleteFlashcardView(View):
     def get(self, request, pk):
         card = get_object_or_404(Flashcard, id=pk)
         card.delete()
-        return redirect("/show_all/flashcards/")
+        return redirect("/show_all/lists")
+
+
+class RedirectDeleteFlashcardView(View):
+    def get(self, request, pk):
+        item = get_object_or_404(Flashcard, id=pk)
+        item.delete()
+        return redirect(request.META['HTTP_REFERER'])
 
 
 class ShowListsView(View):
@@ -151,6 +158,13 @@ class DeleteListView(View):
         return redirect("/show_all/lists/")
 
 
+class RedirectDeleteListView(View):
+    def get(self, request, pk):
+        item = get_object_or_404(List, id=pk)
+        item.delete()
+        return redirect(request.META['HTTP_REFERER'])
+
+
 class ShowCoursesView(View):
     def get(self, request):
         courses = Course.objects.all()
@@ -204,7 +218,7 @@ class AddListToCourseView(View):
         form = AddList(initial={"courses": course,
                                            "language_to_learn": course.language_to_learn,
                                            "learning_in_language": course.learning_in_language})
-        return render(request, 'add-course.html', {"form": form})
+        return render(request, 'add-list.html', {"form": form})
 
     def post(self, request, pk):
         form = AddList(request.POST)
@@ -220,6 +234,18 @@ class DeleteCourseView(View):
         course = get_object_or_404(Course, id=pk)
         course.delete()
         return redirect("/show_all/courses/")
+
+
+class RedirectDeleteView(View):
+    def get(self, request, cls, pk):
+        if cls == "c":
+            item = get_object_or_404(Course, id=pk)
+        elif cls == "f":
+            item = get_object_or_404(Flashcard, id=pk)
+        else:
+            item = get_object_or_404(List, id=pk)
+        item.delete()
+        return redirect(request.META['HTTP_REFERER'])
 
 
 class LearningModeMainView(View):
@@ -290,3 +316,16 @@ class FlashcardGame(View):
                 messages.success(request, f"Revised all cards on this mastery level!")
                 return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
 
+
+class AddLanguageView(View):
+    def get(self, request):
+        form = AddLanguage()
+        return render(request, 'add-language.html', {"form": form})
+
+    def post(self, request):
+        form = AddLanguage(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/show_all/courses/add/')
+        else:
+            return HttpResponse("Error!")

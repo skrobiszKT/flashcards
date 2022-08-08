@@ -34,6 +34,7 @@ class AddList(forms.ModelForm):
         self.fields['language_to_learn'].required = False
         self.fields['learning_in_language'].required = False
         self.fields['tags'].required = False
+        self.fields['courses'].required = True
 
 
 class AddCourse(forms.ModelForm):
@@ -48,10 +49,11 @@ class AddCourse(forms.ModelForm):
         self.fields['tags'].required = False
 
 
-LEARNING_CHOICES = (
-    (1, "None"),
-    (2, "Medium"),
-    (3, "High"),
-    (4, "Difficult")
-)
+class AddLanguage(forms.ModelForm):
+    class Meta:
+        model = Language
+        fields = '__all__'
 
+    def __int__(self, *args, **kwargs):
+        super(AddLanguage, self).__init__(*args, **kwargs)
+        self.fields['symbol'].required = False

@@ -11,7 +11,7 @@
             <p>{{ course.language_to_learn }} - {{ course.learning_in_language }} </p>
             {% endif %}
         <p>Level: {{ course.get_level_display }}</p>
-        <a href="/show_all/courses/{{ course.id }}/">>details<</a> <a href="/show_all/courses/{{ course.id }}/edit/">>edit<</a> <a href="/show_all/courses/{{ course.id }}/delete/">>delete<</a></li>
+        <a href="/show_all/courses/{{ course.id }}/">>details<</a> <a href="/show_all/courses/{{ course.id }}/edit/">>edit<</a> <a href="/delete/c/{{ course.id }}/">>delete<</a></li>
 
     {% endfor %}
     </ul>

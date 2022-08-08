@@ -8,18 +8,17 @@
         <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a>
     <a href="/show_all/lists/{{ list.id }}/add-flashcard/">+ add new flashcard to this list</a>
 
-<p>Included in courses:</p>
+<p>Included in course:</p>
    <ul>
-    {% for course in list.courses.all %}
-    <li><a href="/show_all/courses/{{ course.id }}/">{{ course.name }}</a></li>
-    {%  endfor %}
+
+    <li><a href="/show_all/courses/{{ list.courses.id }}/">{{ list.courses.name }}</a></li>
    </ul>
-    <h2>Flashcards added to this list: {{ list.flashcards.count }}</h2>
+    <h2>Flashcards added to this list: {{ list.flashcard_set.count }}</h2>
     <ol>
     {% for card in list.flashcard_set.all %}
     <li><h3>{{ card.front }} - {{ card.back }}</h3>
         <p>{{ card.front_language.symbol }} - {{ card.back_language.symbol }} </p>
-        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/show_all/flashcards/{{ card.id }}/delete/">>remove<</a></li>
+        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/">>delete<</a></li>
     {% endfor %}
     </ol>
 
