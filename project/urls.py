@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from flashcards.views import MainView, AddFlashcardView, ShowAllFlashcardsView, FlashcardDetailView, EditFlashcardView, DeleteFlashcardView, ShowListsView, ListDetailView, AddListView, EditListView, AddFlashcardToListView, DeleteListView, ShowCoursesView, CourseDetailView, AddCourseView, EditCourseView, DeleteCourseView, AddListToCourseView, LearningModeMainView, CourseLearningModeView, FlashcardGame, AddLanguageView, RedirectDeleteView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,7 +41,7 @@ urlpatterns = [
     path('show_all/courses/<int:pk>/add-list/', AddListToCourseView.as_view(), name="add-list-to-course"),
     path('learning_mode/', LearningModeMainView.as_view(), name="learning-mode"),
     path('learning_mode/course/<int:pk>/', CourseLearningModeView.as_view(), name="course-learning-mode"),
-    path('learning_mode/<int:pk>/<int:level>/', FlashcardGame.as_view(), name="flashcard-game"),
+    path('learning_mode/<str:pk>/<int:level>/<str:method>/', FlashcardGame.as_view(), name="flashcard-game"),
     path('add_language/', AddLanguageView.as_view(), name="add-language"),
     path('delete/<str:cls>/<int:pk>/', RedirectDeleteView.as_view(), name='redirect-delete'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -17,7 +17,19 @@
 {% endblock %}
 {% block content %}
 <h1>Guess</h1>
+    {% if method == "words" %}
     <h3>{{ card.front }}</h3>
+    {% endif %}
+    {% if method == "words-reverse" %}
+    <h3>{{ card.back }}</h3>
+    {% endif %}
+    {% if method == "img" %}
+        {% if card.image %}
+  <img src="{{ card.image.url }}" alt="{{ card.back }}">
+            {% else %}
+            <p>No image uploaded! The word is {{ card.back }}</p>
+    {% endif %}
+        {% endif %}
     <form action="" method="POST">
     {% csrf_token %}
         <input type="hidden" name="card_id" value="{{ card.id }}">

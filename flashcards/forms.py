@@ -22,6 +22,7 @@ class AddFlashcard(forms.ModelForm):
         self.fields['front_language'].required = False
         self.fields['back_language'].required = False
         self.fields['tags'].required = False
+        self.fields['image'].required = False
 
 
 class AddList(forms.ModelForm):

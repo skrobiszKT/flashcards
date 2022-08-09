@@ -1,4 +1,5 @@
 import random
+from itertools import chain
 
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
@@ -33,7 +34,7 @@ class AddFlashcardView(View):
         return render(request, 'add-flashcard.html', {"form": form})
 
     def post(self, request):
-        form = AddFlashcard(request.POST)
+        form = AddFlashcard(data=request.POST, files=request.FILES or None)
         if form.is_valid():
             form.save()
             return redirect('/show_all/flashcards/')
@@ -65,7 +66,7 @@ class EditFlashcardView(View):
 
     def post(self, request, pk):
         card = get_object_or_404(Flashcard, id=pk)
-        form = AddFlashcard(request.POST, instance=card)
+        form = AddFlashcard(data=request.POST, instance=card, files=request.FILES or None)
         if form.is_valid():
             form.save()
             return redirect(f"/show_all/flashcards/{card.id}")
@@ -143,7 +144,7 @@ class AddFlashcardToListView(View):
         return render(request, 'add-flashcard.html', {"form": form})
 
     def post(self, request, pk):
-        form = AddFlashcard(request.POST)
+        form = AddFlashcard(data=request.POST, files=request.FILES or None)
         if form.is_valid():
             form.save()
             return redirect(f'/show_all/lists/{pk}')
@@ -265,57 +266,100 @@ class CourseLearningModeView(View):
     def post(self, request, pk):
         chosen_list_id = request.POST.get("list")
         level = request.POST.get("level")
+        method = request.POST.get("method")
         if chosen_list_id == "" or level == "":
             messages.error(request, "Please choose a list and a level")
             return redirect(f"/learning_mode/course/{pk}/")
         else:
-            return redirect(f"/learning_mode/{chosen_list_id}/{level}/")
+            return redirect(f"/learning_mode/{chosen_list_id}/{level}/{method}/")
 
 
 class FlashcardGame(View):
-    def get(self, request, pk, level):
-        chosen_list = get_object_or_404(List, id=pk)
-        if level == 5:
-            if chosen_list.flashcard_set.filter(is_difficult=True):
-                cards = chosen_list.flashcard_set.filter(is_difficult=True)
-            else:
+    def get(self, request, pk, level, method):
+        if pk[0] == "c":
+            course_lists = List.objects.filter(courses_id=pk[1:])
+            cards_list = []
+            for el in course_lists:
+                if level == 5:
+                    if el.flashcard_set.filter(is_difficult=True):
+                        cards_list.append(el.flashcard_set.filter(is_difficult=True))
+                else:
+                    if el.flashcard_set.filter(mastery_level=level):
+                        cards_list.append(el.flashcard_set.filter(mastery_level=level))
+            if len(cards_list) == 0:
                 messages.error(request, "No such cards!")
                 return redirect("/learning_mode/")
-        else:
-            if chosen_list.flashcard_set.filter(mastery_level=level):
-                cards = chosen_list.flashcard_set.filter(mastery_level=level)
-            else:
-                messages.error(request, "No such cards!")
-                return redirect("/learning_mode/")
-        random_card = random.choice(cards)
-        return render(request, "flashcard-game.html", {"card": random_card})
 
-    def post(self, request, pk, level):
+            cards = cards_list[-1]
+            for i in range(len(cards_list)-1):
+                cards = cards | cards_list[i]
+
+        else:
+            chosen_list = get_object_or_404(List, id=pk)
+            if level == 5:
+                if chosen_list.flashcard_set.filter(is_difficult=True):
+                    cards = chosen_list.flashcard_set.filter(is_difficult=True)
+                else:
+                    messages.error(request, "No such cards!")
+                    return redirect("/learning_mode/")
+            else:
+                if chosen_list.flashcard_set.filter(mastery_level=level):
+                    cards = chosen_list.flashcard_set.filter(mastery_level=level)
+                else:
+                    messages.error(request, "No such cards!")
+                    return redirect("/learning_mode/")
+        random_card = random.choice(cards)
+        ctx = {
+            "card": random_card,
+            "method": method
+        }
+        return render(request, "flashcard-game.html", ctx)
+
+    def post(self, request, pk, level, method):
         answer = request.POST.get("answer").lower()
         card_id = request.POST.get("card_id")
         card = Flashcard.objects.get(id=card_id)
-        chosen_list = get_object_or_404(List, id=pk)
-        if answer == card.back.lower():
+        if method == "img" or method == "words-reverse":
+            result = True if answer == card.front.lower() else False
+        else:
+            result = True if answer == card.back.lower() else False
+
+        if result == True:
             if card.mastery_level < 4:
                 card.mastery_level = card.mastery_level + 1
                 card.save()
             messages.success(request, f"Correct answer!")
-            if chosen_list.flashcard_set.filter(mastery_level=level):
-                return redirect(f"/learning_mode/{pk}/{level}/")
+            if pk[0] != "c":
+                chosen_list = get_object_or_404(List, id=pk)
+                if chosen_list.flashcard_set.filter(mastery_level=level):
+                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+                else:
+                    messages.success(request, f"Revised all cards on this mastery level!")
+                    return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
             else:
-                messages.success(request, f"Revised all cards on this mastery level!")
-                return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
+                if Flashcard.objects.filter(lists__courses_id=pk[1:]).filter(mastery_level=level):
+                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+                else:
+                    messages.success(request, f"Revised all cards on this mastery level!")
+                    return redirect(f"/learning_mode/course/{pk[1:]}/")
         else:
             if card.mastery_level > 1:
                 card.mastery_level = card.mastery_level - 1
                 card.save()
             messages.error(request, f"Wrong Answer! The correct answer was {card.back}.")
-            if chosen_list.flashcard_set.filter(mastery_level=level):
-                return redirect(f"/learning_mode/{pk}/{level}/")
+            if pk[0] != "c":
+                chosen_list = get_object_or_404(List, id=pk)
+                if chosen_list.flashcard_set.filter(mastery_level=level):
+                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+                else:
+                    messages.success(request, f"Revised all cards on this mastery level!")
+                    return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
             else:
-                messages.success(request, f"Revised all cards on this mastery level!")
-                return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
-
+                if Flashcard.objects.filter(lists__courses_id=pk[1:]).filter(mastery_level=level):
+                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+                else:
+                    messages.success(request, f"Revised all cards on this mastery level!")
+                    return redirect(f"/learning_mode/course/{pk[1:]}/")
 
 class AddLanguageView(View):
     def get(self, request):

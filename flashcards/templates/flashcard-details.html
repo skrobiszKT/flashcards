@@ -5,6 +5,9 @@
     <p>Front: {{ card.front }} </p>
     <p>Back: {{ card.back }}</p>
      <p>Languages: {{ card.front_language }} - {{ card.back_language }} </p>
+    {% if card.image %}
+    <img src="{{ card.image.url }}" alt="{{ card.front }} - {{ card.back }}">
+    {% endif %}
     <p>Mastery level: {{ card.get_mastery_level_display }}</p>
     <p>Tags: {{ card.tags }}</p>
 
