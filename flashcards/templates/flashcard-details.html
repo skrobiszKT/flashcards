@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
-
-{% block content %}
+{% block title %}
 <h1>Flashcard number {{ card.id }}</h1>
+{% endblock %}
+{% block content %}
     <p>Front: {{ card.front }} </p>
     <p>Back: {{ card.back }}</p>
      <p>Languages: {{ card.front_language }} - {{ card.back_language }} </p>

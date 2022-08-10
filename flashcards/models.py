@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 MASTERY_LEVELS = (
         (1, "Hard"),
@@ -58,9 +58,17 @@ class Flashcard(models.Model):
     mastery_level = models.IntegerField(choices=MASTERY_LEVELS, default=1)
     is_difficult = models.BooleanField(default=False)
     tags = models.CharField(max_length=32, null=True)
-    lists = models.ManyToManyField(List, blank=True, )
+    lists = models.ManyToManyField(List, blank=True)
     image = models.ImageField(upload_to='images', null=True)
 
     def __str__(self):
         self.showed_name = f"{self.front} - {self.back}"
         return self.showed_name
+
+
+# class FlashcardUser(AbstractUser):
+#     courses = models.ManyToManyField(Course, blank=True)
+#     lists = models.ManyToManyField(List, blank=True)
+#     flashcards = models.ManyToManyField(Flashcard, blank=True)
+#     languages_to_learn = models.ManyToManyField(Language, related_name="user_learn_langs", blank=True)
+#     learning_in_languages = models.ManyToManyField(Language, related_name="user_langs", blank=True)

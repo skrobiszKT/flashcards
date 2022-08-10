@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from flashcards.views import MainView, AddFlashcardView, ShowAllFlashcardsView, FlashcardDetailView, EditFlashcardView, DeleteFlashcardView, ShowListsView, ListDetailView, AddListView, EditListView, AddFlashcardToListView, DeleteListView, ShowCoursesView, CourseDetailView, AddCourseView, EditCourseView, DeleteCourseView, AddListToCourseView, LearningModeMainView, CourseLearningModeView, FlashcardGame, AddLanguageView, RedirectDeleteView
+from flashcards.views import MainView, AddFlashcardView, ShowAllFlashcardsView, FlashcardDetailView, EditFlashcardView, DeleteFlashcardView, ShowListsView, ListDetailView, AddListView, EditListView, AddFlashcardToListView, DeleteListView, ShowCoursesView, CourseDetailView, AddCourseView, EditCourseView, DeleteCourseView, AddListToCourseView, LearningModeMainView, CourseLearningModeView, FlashcardGame, AddLanguageView, RedirectDeleteView, LoginView, LogoutView, CreateNewUserView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', MainView.as_view(), name="main"),
+    path('login/', LoginView.as_view(), name="login"),
+    path('logout/', LogoutView.as_view(), name="logout"),
+    path('register/', CreateNewUserView.as_view(), name="register"),
     path('add_flashcard/', AddFlashcardView.as_view(), name="add-flashcard"),
     path('show_all/flashcards/', ShowAllFlashcardsView.as_view(), name='list-flashcards'),
     path('show_all/flashcards/<int:pk>/', FlashcardDetailView.as_view(), name='flashcard-details'),
@@ -44,4 +47,4 @@ urlpatterns = [
     path('learning_mode/<str:pk>/<int:level>/<str:method>/', FlashcardGame.as_view(), name="flashcard-game"),
     path('add_language/', AddLanguageView.as_view(), name="add-language"),
     path('delete/<str:cls>/<int:pk>/', RedirectDeleteView.as_view(), name='redirect-delete'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

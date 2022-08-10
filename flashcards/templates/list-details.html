@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-
-{% block content %}
+{% block title %}
 <h1>{{ list.name }} - list's details</h1>
+{% endblock %}
+{% block content %}
+
     <p>Language to learn: {{ list.language_to_learn }}</p>
     <p>Learning in: {{ list.learning_in_language }}</p>
     <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a>

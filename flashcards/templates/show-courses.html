@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-
-{% block content %}
+{% block title %}
 <h1>Your Courses</h1>
+{% endblock %}
+{% block content %}
+
     <p><a href="{% url "add-course" %}">Add a new course</a></p>
     <p>Added so far: {{ courses.count }} course(s)</p>
     <ul>

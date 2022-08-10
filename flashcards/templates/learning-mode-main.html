@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-
-{% block content %}
+{% block title %}
 <h1>Learning Mode</h1>
+{% endblock %}
+{% block content %}
+
     <h3>Choose a course:</h3>
     {% if not courses %}
     <h3>Add a course first!</h3>

@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}
+<h1>Add a course</h1>
+{% endblock %}
 
 {% block content %}
-<h1>Add a course</h1>
+
 <p><a href="{% url 'add-language' %}">+ add a language</a></p>
     <form action="" method="POST">
     {% csrf_token %}

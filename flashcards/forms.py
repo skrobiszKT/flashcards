@@ -1,5 +1,6 @@
 from django import forms
-
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from flashcards.models import Flashcard, Language, MASTERY_LEVELS, List, Course
 
 
@@ -58,3 +59,14 @@ class AddLanguage(forms.ModelForm):
     def __int__(self, *args, **kwargs):
         super(AddLanguage, self).__init__(*args, **kwargs)
         self.fields['symbol'].required = False
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=20)
+    password = forms.CharField(label="Password", widget=forms.PasswordInput, max_length=50)
+
+
+class CreateNewUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ["username", "password1", "password2"]

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-
-{% block content %}
+{% block title %}
 <h1>Your Lists</h1>
+{% endblock %}
+{% block content %}
+
     <p><a href="{% url "add-list" %}">Add a new list</a></p>
     <p>Added so far: {{ lists.count }} list(s)</p>
     <ul>

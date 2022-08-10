@@ -8,3 +8,4 @@ admin.site.register(Flashcard)
 admin.site.register(Course)
 admin.site.register(Language)
 
+

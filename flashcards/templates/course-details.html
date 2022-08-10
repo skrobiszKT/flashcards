@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-
+{% block title %}
+<h1>{{ course.name }} - course's details</h1>
+{% endblock %}
 {% block content %}
 <h1>{{ course.name }} - course's details</h1>
     <p>Language to learn: {{ course.language_to_learn }}</p>

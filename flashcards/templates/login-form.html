@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}
-<h1>Add a language</h1>
+<h1>Login</h1>
 {% endblock %}
 {% block content %}
-
+<p>...or create a new user <a href="{%  url "register" %}"> >here< </a> </p>
     <form action="" method="POST">
     {% csrf_token %}
     {{ form.as_p }}

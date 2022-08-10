@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block title %}
+<h1>Learning Mode</h1>
+{% endblock %}
 {% block messages %}
 
         <ul class="messages" id="messages-list">
@@ -25,7 +28,7 @@
     {% endif %}
     {% if method == "img" %}
         {% if card.image %}
-  <img src="{{ card.image.url }}" alt="{{ card.back }}">
+  <img class="img-fluid h-25 w-auto p-2" src="{{ card.image.url }}" alt="{{ card.back }}">
             {% else %}
             <p>No image uploaded! The word is {{ card.back }}</p>
     {% endif %}
