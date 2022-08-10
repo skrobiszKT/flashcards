@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}
-<h1>Add a course</h1>
+<h1>Edit a language</h1>
 {% endblock %}
-
 {% block content %}
 
-<p><a href="{% url 'add-language' %}">+ add a language</a> <a href="{% url "edit-languages" %}">  edit languages </a></p>
+
     <form action="" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
 <input type="submit" value="OK">
 </form>
+    <a href="/delete_language/{{ language.id }}"> >delete< </a>
 
 {% endblock %}

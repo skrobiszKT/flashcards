@@ -4,6 +4,7 @@
 {% endblock %}
 {% block content %}
     <p><a href="{% url "add-flashcard" %}">Add a new flashcard</a></p>
+    <p><a href="{% url "add-multiple" %}">Add multiple flashcards</a></p>
     <p>Added so far: {{ flashcards.count }} flashcard(s)</p>
     <ul>
     {% for card in flashcards %}

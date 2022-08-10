@@ -14,8 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from flashcards.views import MainView, AddFlashcardView, ShowAllFlashcardsView, FlashcardDetailView, EditFlashcardView, DeleteFlashcardView, ShowListsView, ListDetailView, AddListView, EditListView, AddFlashcardToListView, DeleteListView, ShowCoursesView, CourseDetailView, AddCourseView, EditCourseView, DeleteCourseView, AddListToCourseView, LearningModeMainView, CourseLearningModeView, FlashcardGame, AddLanguageView, RedirectDeleteView, LoginView, LogoutView, CreateNewUserView
+from django.urls import path, re_path
+from flashcards.views import MainView, AddFlashcardView, ShowAllFlashcardsView, FlashcardDetailView, EditFlashcardView, DeleteFlashcardView, ShowListsView, ListDetailView, AddListView, EditListView, AddFlashcardToListView, DeleteListView, ShowCoursesView, CourseDetailView, AddCourseView, EditCourseView, DeleteCourseView, AddListToCourseView, LearningModeMainView, CourseLearningModeView, FlashcardGame, AddLanguageView, RedirectDeleteView, LoginView, LogoutView, CreateNewUserView, EditLanguagesView, EditLanguageDetailView, DeleteLanguageView, AddMultipleFlashcardsView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name="logout"),
     path('register/', CreateNewUserView.as_view(), name="register"),
     path('add_flashcard/', AddFlashcardView.as_view(), name="add-flashcard"),
+    path('add_multiple_flashcards/', AddMultipleFlashcardsView.as_view(), name="add-multiple"),
     path('show_all/flashcards/', ShowAllFlashcardsView.as_view(), name='list-flashcards'),
     path('show_all/flashcards/<int:pk>/', FlashcardDetailView.as_view(), name='flashcard-details'),
     path('show_all/flashcards/<int:pk>/edit/', EditFlashcardView.as_view(), name='edit-flashcard'),
@@ -46,5 +47,8 @@ urlpatterns = [
     path('learning_mode/course/<int:pk>/', CourseLearningModeView.as_view(), name="course-learning-mode"),
     path('learning_mode/<str:pk>/<int:level>/<str:method>/', FlashcardGame.as_view(), name="flashcard-game"),
     path('add_language/', AddLanguageView.as_view(), name="add-language"),
+    path('edit_languages/', EditLanguagesView.as_view(), name="edit-languages"),
+    path('edit_languages/<int:pk>/', EditLanguageDetailView.as_view(), name="edit-language-details"),
+    path('delete_language/<int:pk>/', DeleteLanguageView.as_view(), name="delete-language"),
     path('delete/<str:cls>/<int:pk>/', RedirectDeleteView.as_view(), name='redirect-delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

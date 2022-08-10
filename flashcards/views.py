@@ -43,6 +43,36 @@ class AddFlashcardView(LoginRequiredMixin, View):
             return HttpResponse("Error")
 
 
+class AddMultipleFlashcardsView(LoginRequiredMixin, View):
+    login_url = 'login'
+    def get(self, request):
+        lists = List.objects.all()
+        langs = Language.objects.all()
+        ctx = {
+            "lists": lists,
+            "langs": langs
+        }
+        return render(request, "add-multiple-flashcards.html", ctx)
+
+    def post(self, request):
+        cards = request.POST.get("cards")
+        chosen_list = get_object_or_404(List, id=request.POST.get("list"))
+        front_lang = get_object_or_404(Language, id=request.POST.get("front_lang"))
+        back_lang = get_object_or_404(Language, id=request.POST.get("back_lang"))
+        new_cards = cards.split("\r\n")
+        for card in new_cards:
+            new_card = card.split(", ")
+            flashcard = Flashcard()
+            flashcard.front = new_card[0]
+            flashcard.back = new_card[1]
+            flashcard.front_language = front_lang
+            flashcard.back_language = back_lang
+            flashcard.save()
+            flashcard.lists.add(chosen_list)
+            flashcard.save()
+        return redirect("/show_all/flashcards/")
+
+
 class ShowAllFlashcardsView(View):
     def get(self, request):
         flashcards = Flashcard.objects.all()
@@ -322,12 +352,41 @@ class FlashcardGame(View):
                 else:
                     messages.error(request, "No such cards!")
                     return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
-        random_card = random.choice(cards)
+
+        if level == 1 or level == 4:
+            if "card_id" not in request.session:
+                random_card = cards.order_by("id").last()
+            else:
+                if cards.order_by("id").filter(id__lt=request.session['card_id']).count() > 0:
+                    random_card = cards.order_by("id").filter(id__lt=request.session['card_id']).last()
+                else:
+                    messages.success(request, f"Revised all cards on this mastery level!")
+                    card = get_object_or_404(Flashcard, id=request.session["card_id"])
+                    del request.session['card_id']
+                    return redirect(f"/learning_mode/course/{card.lists.first().courses.id}/")
+
+        else:
+            random_card = random.choice(cards)
         ctx = {
             "card": random_card,
             "method": method
         }
         return render(request, "flashcard-game.html", ctx)
+
+    def course_all(self, request, pk, level, method):
+        if pk[0] != "c":
+            chosen_list = get_object_or_404(List, id=pk)
+            if chosen_list.flashcard_set.filter(mastery_level=level):
+                return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+            else:
+                messages.success(request, f"Revised all cards on this mastery level!")
+                return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
+        else:
+            if Flashcard.objects.filter(lists__courses_id=pk[1:]).filter(mastery_level=level):
+                return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+            else:
+                messages.success(request, f"Revised all cards on this mastery level!")
+                return redirect(f"/learning_mode/course/{pk[1:]}/")
 
     def post(self, request, pk, level, method):
         answer = request.POST.get("answer").lower()
@@ -343,37 +402,15 @@ class FlashcardGame(View):
                 card.mastery_level = card.mastery_level + 1
                 card.save()
             messages.success(request, f"Correct answer!")
-            if pk[0] != "c":
-                chosen_list = get_object_or_404(List, id=pk)
-                if chosen_list.flashcard_set.filter(mastery_level=level):
-                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
-                else:
-                    messages.success(request, f"Revised all cards on this mastery level!")
-                    return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
-            else:
-                if Flashcard.objects.filter(lists__courses_id=pk[1:]).filter(mastery_level=level):
-                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
-                else:
-                    messages.success(request, f"Revised all cards on this mastery level!")
-                    return redirect(f"/learning_mode/course/{pk[1:]}/")
+            request.session['card_id'] = card_id
+            return self.course_all(request, pk, level, method)
         else:
             if card.mastery_level > 1:
                 card.mastery_level = card.mastery_level - 1
                 card.save()
             messages.error(request, f"Wrong Answer! The correct answer was {card.back}.")
-            if pk[0] != "c":
-                chosen_list = get_object_or_404(List, id=pk)
-                if chosen_list.flashcard_set.filter(mastery_level=level):
-                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
-                else:
-                    messages.success(request, f"Revised all cards on this mastery level!")
-                    return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
-            else:
-                if Flashcard.objects.filter(lists__courses_id=pk[1:]).filter(mastery_level=level):
-                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
-                else:
-                    messages.success(request, f"Revised all cards on this mastery level!")
-                    return redirect(f"/learning_mode/course/{pk[1:]}/")
+            request.session['card_id'] = card_id
+            return self.course_all(request, pk, level, method)
 
 
 class AddLanguageView(LoginRequiredMixin, View):
@@ -389,6 +426,44 @@ class AddLanguageView(LoginRequiredMixin, View):
             return redirect('/show_all/courses/add/')
         else:
             return HttpResponse("Error!")
+
+
+class EditLanguagesView(LoginRequiredMixin, View):
+    login_url = 'login'
+    def get(self, request):
+        languages = Language.objects.all()
+        return render(request, "edit-languages.html", {"languages": languages})
+
+    def post(self, request):
+        language_id = request.POST.get("language")
+        return redirect(f"/edit_languages/{language_id}/")
+
+
+class EditLanguageDetailView(LoginRequiredMixin, View):
+    login_url = 'login'
+    def get(self, request, pk):
+        language = get_object_or_404(Language, id=pk)
+        form = AddLanguage(instance=language)
+        ctx = {
+            "language": language,
+            "form": form
+        }
+        return render(request, "edit-language-details.html", ctx)
+
+    def post(self, request, pk):
+        language = get_object_or_404(Language, id=pk)
+        form = AddLanguage(request.POST, instance=language)
+        if form.is_valid():
+            form.save()
+        return redirect("/edit_languages/")
+
+
+class DeleteLanguageView(LoginRequiredMixin, View):
+    login_url = 'login'
+    def get(self, request, pk):
+        language = get_object_or_404(Language, id=pk)
+        language.delete()
+        return redirect("/edit_languages/")
 
 
 class LoginView(View):

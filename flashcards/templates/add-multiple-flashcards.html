@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}
+<h1>Add multiple flashcards</h1>
+{% endblock %}
+{% block content %}
+
+    <form id="form" action="" method="POST">
+    {% csrf_token %}
+         <label for="choose-list">Choose a list:</label>
+    <select id="choose-list" name="list">
+        {% for list in lists %}
+            <option value="{{ list.id }}">{{ list.name }} ({{ list.courses.name }})</option>
+        {% endfor %}
+    </select>
+    <label for="choose-front-lang">Language you are learning:</label>
+    <select id="choose-front-lang" name="front_lang">
+        {% for lang in langs %}
+            <option value="{{ lang.id }}">{{ lang.language }} ({{ lang.symbol }})</option>
+        {% endfor %}
+    </select>
+    <label for="choose-back-lang">Learning in language:</label>
+    <select id="choose-back-lang" name="back_lang">
+        {% for lang in langs %}
+            <option value="{{ lang.id }}">{{ lang.language }} ({{ lang.symbol }})</option>
+        {% endfor %}
+
+    </select>
+         <label for="multiple-flashcards">Type values:</label>
+        <textarea id="multiple-flashcards" name="cards" form="form"></textarea>
+
+<input type="submit" value="OK">
+</form>
+
+{% endblock %}

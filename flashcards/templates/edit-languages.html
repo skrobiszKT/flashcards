@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+<h1>Edit languages</h1>
+{% endblock %}
+{% block content %}
+
+
+    <form action="" method="POST">
+    {% csrf_token %}
+   <label for="choose-language">Choose a language:</label>
+    <select id="choose-language" name="language">
+        {% for language in languages %}
+            <option value="{{ language.id }}">{{ language.language }} ({{ language.symbol }})</option>
+        {% endfor %}
+    </select>
+<input type="submit" value="OK">
+</form>
+
+
+{% endblock %}
