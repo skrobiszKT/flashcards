@@ -61,7 +61,7 @@ class AddMultipleFlashcardsView(LoginRequiredMixin, View):
         back_lang = get_object_or_404(Language, id=request.POST.get("back_lang"))
         new_cards = cards.split("\r\n")
         for card in new_cards:
-            new_card = card.split(", ")
+            new_card = card.split("; ")
             flashcard = Flashcard()
             flashcard.front = new_card[0]
             flashcard.back = new_card[1]

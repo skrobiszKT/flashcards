@@ -3,7 +3,10 @@
 <h1>Add multiple flashcards</h1>
 {% endblock %}
 {% block content %}
-
+<p>Type words, separate front and back with a semicolon and space, separate flashcards with a new line.</p>
+    <p>Example:</p>
+    <p>Word; Translation <br>
+    Another Word; Another Translation</p>
     <form id="form" action="" method="POST">
     {% csrf_token %}
          <label for="choose-list">Choose a list:</label>
