@@ -323,8 +323,12 @@ class CourseLearningModeView(View):
         if 'card_id' in request.session:
             del request.session['card_id']
         course = get_object_or_404(Course, id=pk)
+        cards_in_course = 0
+        for list in course.list_set.all():
+            cards_in_course += list.flashcard_set.count()
         ctx = {
             'course': course,
+            'card_count': cards_in_course
         }
         return render(request, "course-learning-mode.html", ctx)
 
@@ -348,6 +352,9 @@ class FlashcardGame(View):
                 if level == 5:
                     if el.flashcard_set.filter(is_difficult=True):
                         cards_list.append(el.flashcard_set.filter(is_difficult=True))
+                elif level == 6:
+                    if el.flashcard_set.all():
+                        cards_list.append(el.flashcard_set.all())
                 else:
                     if el.flashcard_set.filter(mastery_level=level):
                         cards_list.append(el.flashcard_set.filter(mastery_level=level))
@@ -367,6 +374,12 @@ class FlashcardGame(View):
                 else:
                     messages.error(request, "No such cards!")
                     return redirect("/learning_mode/")
+            elif level == 6:
+                if chosen_list.flashcard_set.all():
+                    cards = chosen_list.flashcard_set.all()
+                else:
+                    messages.error(request, "No such cards!")
+                    return redirect("/learning_mode/")
             else:
                 if chosen_list.flashcard_set.filter(mastery_level=level):
                     cards = chosen_list.flashcard_set.filter(mastery_level=level)
@@ -375,7 +388,7 @@ class FlashcardGame(View):
                     messages.error(request, "No such cards!")
                     return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
 
-        if level == 1 or level == 4 or level == 5:
+        if level == 1 or level == 4 or level == 5 or level == 6:
             print(request.session["card_id"]) if "card_id" in request.session else print("None")
 
             if "card_id" in request.session:
@@ -413,6 +426,8 @@ class FlashcardGame(View):
                 return redirect(f"/learning_mode/{pk}/{level}/{method}/")
             elif level == 5 and chosen_list.flashcard_set.filter(is_difficult=True):
                 return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+            elif level == 6 and chosen_list.flashcard_set.all():
+                return redirect(f"/learning_mode/{pk}/{level}/{method}/")
             else:
                 messages.success(request, f"Revised all cards on this mastery level!")
                 del request.session['card_id']
@@ -423,6 +438,9 @@ class FlashcardGame(View):
                     return redirect(f"/learning_mode/{pk}/{level}/{method}/")
             elif level == 5:
                 if Flashcard.objects.filter(lists__courses_id=pk[1:]).filter(is_difficult=True):
+                    return redirect(f"/learning_mode/{pk}/{level}/{method}/")
+            elif level == 6:
+                if Flashcard.objects.filter(lists__courses_id=pk[1:]).all():
                     return redirect(f"/learning_mode/{pk}/{level}/{method}/")
             else:
                 messages.success(request, f"Revised all cards on this mastery level!")
