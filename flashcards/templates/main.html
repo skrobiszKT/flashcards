@@ -4,6 +4,10 @@
 {% endblock %}
 {% block content %}
 
+<div class="container p-2 mb-2 px-3 border bg-light">
+        <h4>How to start:</h4>
+    <p>Create an account, create a new course, add lists and flashcards. Then try Learning Mode!</p>
+    </div>
     <h3>Quick welcome revision:</h3>
     <div class="d-inline-flex p-2 px-4 border bg-light">
     {% if card is None %}
@@ -28,5 +32,6 @@
     <a href="/show_all/courses/{{ recent_course.id }}/">{{ recent_course.name }}</a>
     {% endif %}
     </div>
+
 {% endblock %}
 

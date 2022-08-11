@@ -8,10 +8,14 @@
     <p>Added so far: {{ flashcards.count }} flashcard(s)</p>
     <ul>
     {% for card in flashcards %}
-        <li><h3>{{ card.front }} - {{ card.back }}</h3>
+<div class="border-bottom">
+        <li>
+            <div class="d-inline-flex p-2 px-4 mt-4 border bg-light">
+            <h3>{{ card.front }} - {{ card.back }}</h3>
+            </div>
         <p>{{ card.front_language.symbol }} - {{ card.back_language.symbol }} </p>
         <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/">>delete<</a></li>
-
+</div>
     {% endfor %}
     </ul>
 {% endblock %}
