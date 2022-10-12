@@ -14,7 +14,7 @@
             <h3>{{ card.front }} - {{ card.back }}</h3>
             </div>
         <p>{{ card.front_language.symbol }} - {{ card.back_language.symbol }} </p>
-        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/">>delete<</a></li>
+        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/" onclick="return confirm('Are you sure?')">>delete<</a></li>
 </div>
     {% endfor %}
     </ul>

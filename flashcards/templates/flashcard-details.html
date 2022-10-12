@@ -23,5 +23,5 @@
    </ul>
 
         <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a>
-        <a href="/show_all/flashcards/{{ card.id }}/delete/">>delete<</a>
+        <a href="/show_all/flashcards/{{ card.id }}/delete/" onclick="return confirm('Are you sure?')">>delete<</a>
 {% endblock %}

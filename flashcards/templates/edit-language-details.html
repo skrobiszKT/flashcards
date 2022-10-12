@@ -10,6 +10,6 @@
     {{ form.as_p }}
 <input type="submit" value="OK">
 </form>
-    <a href="/delete_language/{{ language.id }}"> >delete< </a>
+    <a href="/delete_language/{{ language.id }}" onclick="return confirm('Are you sure?')"> >delete< </a>
 
 {% endblock %}

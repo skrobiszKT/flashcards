@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
 # Create your models here.
 MASTERY_LEVELS = (
-        (1, "Hard"),
-        (2, "Good"),
-        (3, "Easy"),
-        (4, "Excellent")
-    )
+    (1, "Hard"),
+    (2, "Good"),
+    (3, "Easy"),
+    (4, "Excellent")
+)
 
 COURSE_LEVELS = (
     (1, "Beginner"),
@@ -28,7 +29,8 @@ class Language(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=64)
-    language_to_learn = models.ForeignKey(Language, related_name="front_course_lang", on_delete=models.CASCADE, null=True)
+    language_to_learn = models.ForeignKey(Language, related_name="front_course_lang", on_delete=models.CASCADE,
+                                          null=True)
     learning_in_language = models.ForeignKey(Language, related_name="back_course_lang", on_delete=models.CASCADE,
                                              null=True)
     level = models.IntegerField(choices=COURSE_LEVELS, default=1, null=True)
@@ -64,7 +66,6 @@ class Flashcard(models.Model):
     def __str__(self):
         self.showed_name = f"{self.front} - {self.back}"
         return self.showed_name
-
 
 # class FlashcardUser(AbstractUser):
 #     courses = models.ManyToManyField(Course, blank=True)

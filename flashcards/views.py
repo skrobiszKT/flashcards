@@ -1,6 +1,6 @@
 import random
 import re
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
@@ -61,11 +61,10 @@ class AddMultipleFlashcardsView(LoginRequiredMixin, View):
         chosen_list = get_object_or_404(List, id=request.POST.get("list"))
         front_lang = get_object_or_404(Language, id=request.POST.get("front_lang"))
         back_lang = get_object_or_404(Language, id=request.POST.get("back_lang"))
-        x = re.findall(";\s+\w", cards)
+        x = re.findall(r";\s+\w", cards)
         if not cards or len(x) == 0:
             messages.error(request, "Typed cards' content is invalid!")
             return redirect("/add_multiple_flashcards/")
-
         new_cards = cards.split("\r\n")
         for card in new_cards:
             new_card = card.split("; ")
@@ -81,7 +80,7 @@ class AddMultipleFlashcardsView(LoginRequiredMixin, View):
 
 class ShowAllFlashcardsView(View):
     def get(self, request):
-        flashcards = Flashcard.objects.all().order_by("id")
+        flashcards = Flashcard.objects.all().order_by("-id")
         return render(request, 'show-all-flashcards.html', {"flashcards": flashcards})
 
 
@@ -389,7 +388,6 @@ class FlashcardGame(View):
                     return redirect(f"/learning_mode/course/{chosen_list.courses.id}/")
 
         if level == 1 or level == 4 or level == 5 or level == 6:
-            print(request.session["card_id"]) if "card_id" in request.session else print("None")
 
             if "card_id" in request.session:
                 condition_1 = int(request.session["card_id"]) not in list(
@@ -451,6 +449,7 @@ class FlashcardGame(View):
         answer = request.POST.get("answer").lower()
         card_id = request.POST.get("card_id")
         card = Flashcard.objects.get(id=card_id)
+        print(request.POST)
         if method == "img" or method == "words-reverse":
             result = True if answer == card.front.lower() else False
         else:
@@ -544,7 +543,11 @@ class LoginView(View):
                                 password=form.cleaned_data["password"])
             if user is not None:
                 login(request, user)
-                return redirect("/")
+                next_url = request.GET.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return redirect('/')
             else:
                 messages.error(request, 'Failed to log in!')
                 return redirect("/login/")

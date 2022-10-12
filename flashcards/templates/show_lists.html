@@ -13,7 +13,7 @@
             <p>{{ list.language_to_learn.symbol }} - {{ list.learning_in_language.symbol }} </p>
             <p> {{ list.courses }} ({{ list.courses.get_level_display }})</p>
             {% endif %}
-        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a></li>
+        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/show_all/lists/{{ list.id }}/delete/" onclick="return confirm('Are you sure?')">>delete<</a></li>
 
     {% endfor %}
     </ul>

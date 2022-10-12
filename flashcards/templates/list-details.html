@@ -7,8 +7,9 @@
     <p>Language to learn: {{ list.language_to_learn }}</p>
     <p>Learning in: {{ list.learning_in_language }}</p>
     <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a>
-        <a href="/show_all/lists/{{ list.id }}/delete/">>delete<</a>
+        <a href="/show_all/lists/{{ list.id }}/delete/" onclick="return confirm('Are you sure?')">>delete<</a>
     <a href="/show_all/lists/{{ list.id }}/add-flashcard/">+ add new flashcard to this list</a>
+    <p><a href="{% url "add-multiple" %}">+ add multiple flashcards</a></p>
 
 <p>Included in course:</p>
    <ul>
@@ -20,7 +21,7 @@
     {% for card in list.flashcard_set.all %}
     <li><h3>{{ card.front }} - {{ card.back }}</h3>
         <p>{{ card.front_language.symbol }} - {{ card.back_language.symbol }} </p>
-        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/">>delete<</a></li>
+        <a href="/show_all/flashcards/{{ card.id }}/">>details<</a> <a href="/show_all/flashcards/{{ card.id }}/edit/">>edit<</a> <a href="/delete/f/{{ card.id }}/" onclick="return confirm('Are you sure?')">>delete<</a></li>
     {% endfor %}
     </ol>
 

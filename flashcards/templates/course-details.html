@@ -6,7 +6,7 @@
     <p>Language to learn: {{ course.language_to_learn }}</p>
     <p>Learning in: {{ course.learning_in_language }}</p>
     <a href="/show_all/courses/{{ course.id }}/edit/">>edit<</a>
-        <a href="/show_all/courses/{{ course.id }}/delete/">>delete<</a>
+        <a href="/show_all/courses/{{ course.id }}/delete/" onclick="return confirm('Are you sure?')">>delete<</a>
     <a href="/show_all/courses/{{ course.id }}/add-list/">+ add a new list to this course</a>
 
 
@@ -14,7 +14,7 @@
     <ol>
     {% for list in course.list_set.all %}
     <li><h3>{{ list.name }}</h3>
-        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/delete/l/{{ list.id }}/">>delete<</a></li>
+        <a href="/show_all/lists/{{ list.id }}/">>details<</a> <a href="/show_all/lists/{{ list.id }}/edit/">>edit<</a> <a href="/delete/l/{{ list.id }}/" onclick="return confirm('Are you sure?')">>delete<</a></li>
     {% endfor %}
     </ol>
 
